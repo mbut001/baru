@@ -1,0 +1,64 @@
+-- Load necessary services
+local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
+local RunService = game:GetService("RunService")
+
+-- Define equipment paths
+local equipmentPaths = {
+    "Baseball Bat",
+    "AUG",
+    "Bench",
+    "Bank Bounter",
+    "Chair",
+    "Big Weapon Box",
+    "HUHCube",
+    "Long Board",
+    "ITHACA 37 SHORTY",
+    "MINI-TEC",
+    "PPK",
+    "wristcurl",
+    "barfix",
+    "treadmill"
+}
+
+-- Function to create ESP
+local function createESP(adornedPart, text)
+    local BillboardGui = Instance.new("BillboardGui")
+    BillboardGui.Adornee = adornedPart
+    BillboardGui.Size = UDim2.new(0, 50, 0, 50)
+    BillboardGui.StudsOffset = Vector3.new(0, 2, 0)
+    BillboardGui.AlwaysOnTop = true
+
+    local TextLabel = Instance.new("TextLabel")
+    TextLabel.Parent = BillboardGui
+    TextLabel.Size = UDim2.new(1, 0, 1, 0)
+    TextLabel.BackgroundTransparency = 1
+    TextLabel.TextColor3 = Color3.fromRGB(0, 255, 0) -- Green
+    TextLabel.TextScaled = true
+    TextLabel.Text = text
+
+    BillboardGui.Parent = adornedPart
+    return TextLabel
+end
+
+-- Function to update equipment ESP color
+local function updateESPColor(TextLabel, equipment)
+    local isInUse = equipment:FindFirstChild("InUse") and equipment.InUse.Value
+    if isInUse then
+        TextLabel.TextColor3 = Color3.fromRGB(255, 0, 0) -- Red
+    else
+        TextLabel.TextColor3 = Color3.fromRGB(0, 255, 0) -- Green
+    end
+end
+
+-- Create ESP for each equipment
+local equipmentLabels = {}
+for _, path in ipairs(equipmentPaths) do
+    local equipment = Workspace.ignore:FindFirstChild(path)
+    if equipment then
+        local label = createESP(equipment, equipment.Name)
+        table.insert(equipmentLabels, {label = label, equipment = equipment})
+    else
+        warn("Equipment not found: " .. path)
+    end
+end
